@@ -1,0 +1,45 @@
+---
+title: "Cx4073 : Assignment 3"
+author: "enter names of all team members"
+date: "enter student ids of all team members"
+output:
+  html_document:
+    theme: united
+    highlight: tango
+  word_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+---
+
+### Finding Market Segments in Online Retail
+
+Import the CSV data file `assign1_RetailData.csv` for analysis, and quickly check the structure of the data.
+
+```{r}
+retailData <- read.csv("assign3_RetailData.csv", header = TRUE)
+str(retailData)
+```
+
+The following table summarizes the variables in the dataset. Note the type carefully, and convert if required.
+
+| Variable | Description | Remarks | 
+| -------- | ------------------- | ------------------------------------------ |
+| InvoiceNo | The serial number on the Invoice | May be different for same product and same customer. |
+| StockCode | Product (item) code in the Store | Uniquely assigned to every distinct Product (item). |
+| Description | Product (item) name in the Store | May be different for the same StockCode. Do check. |
+| Quantity | Product Quantity in the Transaction | Will of course change with different transactions. |
+| InvoiceDate | Date-Time of the Transaction | Can you use this too? Try, but it is strictly optional. |
+| UnitPrice | Product Price per Unit (in Dollars) | Should be the same for the same Product. Do check. |
+| CustomerID | Customer code in the Store | Same customer may make various purchases. Check carefully. |
+| Country | Country of Residence of Customer | Should be the same for each individual Customer. |
+
+Hint : Think of creating a Customer-Product matrix before you start your market segmentation. First step is deciding the elements in the matrix, and the second step if to choose the notion of distance that whould be appropriate for this case. See if you can effectively use the variables like `Quantity`, `UnitPrice`, `InvoiceDate` and `Country` in this market segmentation. Don't forget to interpret the market segments that you get!
+
+---
+
+**Continue with Data Exploration, creation of Customer-Product matrix, choice of Distance, various Clustering algorithms, and Interpretation. Submit this .Rmd file as your Solution : [StudentID1_StudentID2_StudentID3].Rmd, where the three StudentIDs are the Matriculation Numbers of the three students in your team. Change the filename appropriately if you have less than three members in your team.**
+
