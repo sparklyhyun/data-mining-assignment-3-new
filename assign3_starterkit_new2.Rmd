@@ -307,7 +307,9 @@ productCountryCluster4 <- subset(allProductCountryClusters, cluster = 4)
 productCountryCluster5 <- subset(allProductCountryClusters, cluster = 5)
 
 
-# for each product, get top 10 cluster 
+# for each product, get top 10 products
+
+# cluster 1
 countries1 <- unique(productCountryCluster1$Country)
 stockCode1 <- unique(productCountryCluster1$StockCode)
 countries1
@@ -315,6 +317,17 @@ stockCode1
 desc1 <- unique(productCountryCluster1$Description)
 desc1
 
+
+countt2dfSort <- countt2df[rev(order(countt2df$Freq)),]
+#head(countt2dfSort)
+
+mostFreqProducts <- countt2dfSort[1:1000, "StockCode"]
+#head(mostFreqProducts) 
+
+mostFreqProductsExtracted <- df7[is.element(df7$StockCode, mostFreqProducts),]
+head(mostFreqProductsExtracted) 
+
+# cluster 2
 countries2 <- unique(productCountryCluster2$Country)
 countries2
 stockCode2 <- unique(productCountryCluster2$StockCode)
