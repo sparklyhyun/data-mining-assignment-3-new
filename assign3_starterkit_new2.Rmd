@@ -273,9 +273,55 @@ clusterColumns3$cluster <- kMeansFit$cluster
 
 clusterColumns3
 
-
-
 ```
+
+# pulling apart a cluster 
+```{r}
+
+mostFreqProductsExtracted$numStockCode <- clusterColumns$numStockCode
+mostFreqProductsExtracted$numCountry <- clusterColumns$numCountry
+mostFreqProductsExtracted$cluster <- clusterColumns3$cluster
+mostFreqProductsExtracted
+
+#sort by cluster & write to file 
+
+clsuterProductCountry <- mostFreqProductsExtracted[order(mostFreqProductsExtracted$cluster),]
+clsuterProductCountry
+
+write.csv(clsuterProductCountry,'clusterProductCustomer.csv')
+
+# separate each cluster into diff dataframe
+
+allProductCountryClusters <- read.csv("clusterProductCustomer.csv", header = TRUE)
+
+allProductCountryClusters
+
+clusterLabels <- allProductCountryClusters$cluster
+
+productCountryCluster1 <- allProductCountryClusters[clusterLabels == 1,]
+productCountryCluster1
+productCountryCluster2 <- allProductCountryClusters[clusterLabels == 2,]
+productCountryCluster2
+productCountryCluster3 <- subset(allProductCountryClusters, cluster = 3)
+productCountryCluster4 <- subset(allProductCountryClusters, cluster = 4)
+productCountryCluster5 <- subset(allProductCountryClusters, cluster = 5)
+
+
+# for each product, get top 10 cluster 
+countries1 <- unique(productCountryCluster1$Country)
+stockCode1 <- unique(productCountryCluster1$StockCode)
+countries1
+stockCode1
+desc1 <- unique(productCountryCluster1$Description)
+desc1
+
+countries2 <- unique(productCountryCluster2$Country)
+countries2
+stockCode2 <- unique(productCountryCluster2$StockCode)
+stockCode2
+```
+
+
 
 
 
