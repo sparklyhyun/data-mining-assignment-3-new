@@ -296,25 +296,17 @@ top10cluster1extracted
 ```{r}
 descriptions1 <- unique(top10cluster1extracted$Description)
 descriptions1
+
 ```
 
 There are some repetitions due to the spelling differences in the names (e.g. *JUMBO BAG VINTAGE DOILY*, *JUMBO BAG VINTAGE DOILEY*, *LUNCH BAG VINTAGE DOILY*, *LUNCH BAG VINTAGE DOILEY*), also different format (e.g. *SPOTTY BUNTING*, *BUNTING , SPOTTY*).
 
-The most popular products in cluster 1 are party wares. To understand why party wares are so popular in cluster 1, the counries and invoice dates were listed. 
+The most popular products in cluster 1 are party wares. To understand why party wares are so popular in cluster 1, 
 
 
 ```{r}
-country1 <- unique(top10cluster1extracted$Country)
-country1
-
-```
-
-
-```{r}
-invoice1 <- unique(top10cluster1extracted$InvoiceDate)
-invoice1
-write.csv(invoice1, "invoiceTest.csv")
-# different spacing for LUNCH BAG SUKI DESIGN 
+price1 <- unique(top10cluster1extracted$UnitPrice)
+price1
 ```
 
 ```{r}
@@ -345,6 +337,10 @@ descriptions2
 
 country2 <- unique(top10cluster2extracted$Country)
 country2
+
+price2 <- unique(top10cluster2extracted$UnitPrice)
+price2
+
 ```
 
 ```{r}
@@ -375,6 +371,9 @@ descriptions3
 
 country3 <- unique(top10cluster1extracted$Country)
 country3
+
+price3 <- unique(top10cluster3extracted$UnitPrice)
+price3
 ```
 
 ```{r}
@@ -405,6 +404,10 @@ descriptions4
 
 country4 <- unique(top10cluster4extracted$Country)
 country4
+
+price4 <- unique(top10cluster4extracted$UnitPrice)
+price4
+
 ```
 
 ```{r}
@@ -436,74 +439,8 @@ descriptions5
 country5 <- unique(top10cluster5extracted$Country)
 country5
 
+price5 <- unique(top10cluster2extracted$UnitPrice)
+price5
 
 ```
 
-
-
-
-
-# stock code vs customer 
-```{r}
-clusterColumns3 <- subset(clusterColumns, select = c("numStockCode", "CustomerID"))
-kMin <- 1
-kMax <- 10
-withinSS <- double(kMax - kMin + 1)
-betweenSS <- double(kMax - kMin + 1)
-for (K in kMin:kMax) {
-  kMeansFit <-  kmeans(clusterColumns3, centers = K)
-  withinSS[K] <- sum(kMeansFit$withinss)
-  betweenSS[K] <- kMeansFit$betweenss
-}
-plot(kMin:kMax, betweenSS, pch=19, type="b", col="red",
-     xlab = "Value of K", ylab = "Sum of Squares (Within and Between)")
-points(kMin:kMax, withinSS, pch=19, type="b", col="green")
-plot(kMin:kMax, withinSS, pch=19, type="b", col="green",
-     xlab = "Value of K", ylab = "Sum of Squares (Within and Between)")
-```
-
-
-
-
-```{r}
-myPal <- c("red","blue","darkgreen","magenta","darkgrey","black")
-K <- 2
-kMeansFit <- kmeans(clusterColumns2, centers = K, nstart = 20)
-kMeansFit
-pairs(clusterColumns, pch = 19, cex = 0.5, 
-      col = palette(myPal)[as.numeric(kMeansFit$cluster)])
-# Note that the labels are stored as follows
-kMeansFit$cluster
-clustLabels <- kMeansFit$cluster
-```
-
-```{r}
-kMeansFit$cluster
-clustLabels <- kMeansFit$cluster
-  
-# We may extract the clusters as follows
-kMeansClust1 = mostFreqProductsExtracted[clustLabels == 1,]
-kMeansClust2 = mostFreqProductsExtracted[clustLabels == 2,]
-```
-
-```{r}
-summary(kMeansClust1)
-summary(kMeansClust2)
-kMeansClust1$numStockCode<-  as.numeric(kMeansClust1$StockCode)
-kMeansClust2$numStockCode<-  as.numeric(kMeansClust2$StockCode)
-kMeansClust1$numCustomerID<-  as.numeric(kMeansClust1$CustomerID)
-kMeansClust2$numCustomerID<-  as.numeric(kMeansClust2$CustomerID)
-kMeansClust1$numQuantity<-  as.numeric(kMeansClust1$Quantity)
-kMeansClust2$numQuantity<-  as.numeric(kMeansClust2$Quantity)
-#kMeansClust1$numDescription <- as.numeric(kMeansClust1$Description)
-kMeansClust2$numCountry <- as.numeric(kMeansClust2$Country)
-kMeansClust1$numCountry <- as.numeric(kMeansClust1$Country)
-#kMeansClust2$numDescription <- as.numeric(kMeansClust2$Description)
-# Observe how the statistical summary differ
-# Remember : Plot on same scales to compare
-par(mfrow=c(2,2))
-hist(kMeansClust1$numCountry,  col = "lightgreen")
-hist(kMeansClust1$Quantity, col = "lightgreen")
-hist(kMeansClust2$numCountry,  col = "steelblue")
-hist(kMeansClust2$Quantity, col = "steelblue")
-```
