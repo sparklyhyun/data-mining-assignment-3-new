@@ -85,6 +85,7 @@ Some data pre-processing has been performed to handle inconsistent data, missing
 * Manuals are add-ons to the products the customers purchase. Therefore, it is highly correlated to the product it is tied to, therefore does not add much information to the analysis. Thus, manuals were also removed from the dataset. 
 * Items with `Description` such as "Adjust bad debt" or "Next Day Carriage" were also excluded as they are not product's names and are inconsistent with the dataset.
 * Items with missing `CustomerID` were also removed from the dataset, as `CustomerID` is a key feature used for clustering. 
+* Items with unspecified country were also removed as country of residence is important in understanding the purchase pattern of the customers. 
 
 
 ---
