@@ -224,14 +224,10 @@ Therefore, 5 clusters were created.
 ```{r}
 K <- 5
 kMeansFit <- kmeans(clusterColumns3, centers = K, nstart = 20)
-kMeansFit
 
 # Note that the labels are stored as follows
 kMeansFit$cluster
-
 clusterColumns3$cluster <- kMeansFit$cluster
-
-clusterColumns3
 
 ```
 
@@ -242,12 +238,10 @@ These 5 clusters were then separated for deeper analysis.
 mostFreqProductsExtracted$numStockCode <- clusterColumns$numStockCode
 mostFreqProductsExtracted$numCountry <- clusterColumns$numCountry
 mostFreqProductsExtracted$cluster <- clusterColumns3$cluster
-mostFreqProductsExtracted
 
 #sort by cluster & write to file 
 
 clsuterProductCountry <- mostFreqProductsExtracted[order(mostFreqProductsExtracted$cluster),]
-clsuterProductCountry
 
 # write.csv(clsuterProductCountry,'clusterProductCustomer.csv')
 
@@ -255,30 +249,21 @@ clsuterProductCountry
 
 allProductCountryClusters <- read.csv("clusterProductCustomer.csv", header = TRUE)
 
-allProductCountryClusters
-
 clusterLabels <- allProductCountryClusters$cluster
 
 productCountryCluster1 <- allProductCountryClusters[clusterLabels == 1,]
-productCountryCluster1
 productCountryCluster2 <- allProductCountryClusters[clusterLabels == 2,]
-productCountryCluster2
 productCountryCluster3 <- allProductCountryClusters[clusterLabels == 3,]
-productCountryCluster3
 productCountryCluster4 <- allProductCountryClusters[clusterLabels == 4,]
-productCountryCluster4
 productCountryCluster5 <- allProductCountryClusters[clusterLabels == 5,]
-productCountryCluster5
 ```
 
 
-*Cluster 1
+* Cluster 1
 
 Top 10 most frequently sold products from cluster1 was extracted. 
 
 ```{r}
-stockcodelol <- unique(productCountryCluster1$StockCode)
-stockcodelol
 cluster1 <- subset(productCountryCluster1, select = c("StockCode"))
 clutercount1 <- table(unlist(cluster1))
 count1<-as.data.frame(clutercount1)
@@ -289,7 +274,6 @@ sortcluster1 <- count1[rev(order(count1$Freq)),]
 top10cluster1 <- sortcluster1[1:10, "StockCode"]
 
 top10cluster1extracted <- productCountryCluster1[is.element(productCountryCluster1$StockCode, top10cluster1),]
-top10cluster1extracted
 ```
 
 ```{r}
@@ -308,7 +292,7 @@ There are some repetitions due to the spelling differences in the names (e.g. *J
 The most popular products in cluster 1 are affordable lunch wares that are popular all around the world. 
 
 
-*Cluster 2
+* Cluster 2
 
 Top 10 most frequently sold products from cluster1 was extracted. 
 
@@ -340,7 +324,7 @@ price2
 The most popular products in cluster 2 are antiques or items associated with tea culture (e.g. *ANTIQUE SILVER TEA GLASS ETCHED*, *ANTIQUE SILVER T-LIGHT GLASS*, *WOODEN FRAME ANTIQUE WHITE*,*60 TEATIME FAIRY CAKE CASES*). The countries in the cluster are mainly European countries which explains why the top products in the cluster are associated with tea. The unit prices across the cluster ranges from 0.40 (teaparty items) to 523.00 (antique silver tea glass).
 
 
-*Cluster 3
+* Cluster 3
 
 Top 10 most frequently sold products from cluster1 was extracted. 
 
@@ -370,7 +354,7 @@ price3
 
 The most popular products in cluster 3 are associated with kitchen items (*LUNCH BAG SUKI  DESIGN*,*REGENCY CAKESTAND 3 TIER*) that are relatively cheaper.
 
-*Cluster 4
+* Cluster 4
 
 Top 10 most frequently sold products from the entire cluster was extracted. 
 
@@ -401,7 +385,7 @@ price4
 Cluster 4 containes some miscelleneous products(e.g. *VICTORIAN GLASS HANGING T-LIGHT*, *RETROSPOT TEA SET CERAMIC 11 PC*, *VINTAGE SNAP CARDS*). These products can also be used as small gifts. 
 
 
-*Cluster 5
+* Cluster 5
 
 Top 10 most frequently sold products from the entire cluster was extracted. 
 
