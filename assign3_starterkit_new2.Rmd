@@ -319,6 +319,7 @@ stockCode1
 desc1 <- unique(productCountryCluster1$Description)
 desc1
 
+#trying to get top 10
 cluster1 <- subset(productCountryCluster1, select = c("StockCode"))
 clutercount1 <- table(unlist(cluster1))
 count1<-as.data.frame(clutercount1)
@@ -334,6 +335,18 @@ top10cluster1
 
 top10cluster1extracted <- productCountryCluster1[is.element(productCountryCluster1$StockCode, top10cluster1),]
 top10cluster1extracted
+
+
+stockcodes <- unique(top10cluster1extracted$StockCode)
+stockcodes
+
+
+descriptions <- unique(top10cluster1extracted$Description)
+descriptions
+
+# different spacing for LUNCH BAG SUKI DESIGN 
+
+
 
 head(mostFreqProductsExtracted) 
 
