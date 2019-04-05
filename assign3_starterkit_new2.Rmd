@@ -274,10 +274,9 @@ productCountryCluster5
 
 *Cluster 1
 
-Top 10 most frequently sold products from the entire cluster was extracted. 
+Top 10 most frequently sold products from cluster1 was extracted. 
 
 ```{r}
-#trying to get top 10
 stockcodelol <- unique(productCountryCluster1$StockCode)
 stockcodelol
 cluster1 <- subset(productCountryCluster1, select = c("StockCode"))
@@ -296,18 +295,17 @@ top10cluster1extracted
 ```{r}
 descriptions1 <- unique(top10cluster1extracted$Description)
 descriptions1
+price1 <- unique(top10cluster1extracted$UnitPrice)
+price1
+
+country1 <- unique(top10cluster1extracted$Country)
+country1
 
 ```
 
 There are some repetitions due to the spelling differences in the names (e.g. *JUMBO BAG VINTAGE DOILY*, *JUMBO BAG VINTAGE DOILEY*, *LUNCH BAG VINTAGE DOILY*, *LUNCH BAG VINTAGE DOILEY*), also different format (e.g. *SPOTTY BUNTING*, *BUNTING , SPOTTY*).
 
-The most popular products in cluster 1 are party wares. To understand why party wares are so popular in cluster 1, 
-
-
-```{r}
-price1 <- unique(top10cluster1extracted$UnitPrice)
-price1
-```
+The most popular products in cluster 1 are affordable lunch wares that are popular all around the world. 
 
 ```{r}
 # cluster 2
@@ -376,71 +374,65 @@ price3 <- unique(top10cluster3extracted$UnitPrice)
 price3
 ```
 
+*Cluster 4
+
+Top 10 most frequently sold products from the entire cluster was extracted. 
+
 ```{r}
-# cluster 4
-#trying to get top 10
 cluster4 <- subset(productCountryCluster4, select = c("StockCode"))
 clutercount4 <- table(unlist(cluster4))
 count4<-as.data.frame(clutercount4)
-count4
 colnames(count4) <- c("StockCode", "Freq")
-count4
 
 sortcluster4 <- count4[rev(order(count4$Freq)),]
-sortcluster4
 
 top10cluster4 <- sortcluster4[1:10, "StockCode"]
-top10cluster4
 
 top10cluster4extracted <- productCountryCluster4[is.element(productCountryCluster4$StockCode, top10cluster4),]
-top10cluster4extracted
+```
 
 
-stockcodes4 <- unique(top10cluster4extracted$StockCode)
-stockcodes4
+```{r}
 
 descriptions4 <- unique(top10cluster4extracted$Description)
 descriptions4
-
-country4 <- unique(top10cluster4extracted$Country)
-country4
 
 price4 <- unique(top10cluster4extracted$UnitPrice)
 price4
 
 ```
 
+Cluster 4 containes some miscelleneous products(e.g. *VICTORIAN GLASS HANGING T-LIGHT*, *RETROSPOT TEA SET CERAMIC 11 PC*, *VINTAGE SNAP CARDS*). These products can also be used as small gifts. 
+
+
+*Cluster 5
+
+Top 10 most frequently sold products from the entire cluster was extracted. 
+
 ```{r}
-#cluster 5
-#trying to get top 10
 cluster5 <- subset(productCountryCluster5, select = c("StockCode"))
 clutercount5 <- table(unlist(cluster5))
 count5<-as.data.frame(clutercount5)
-count5
 colnames(count5) <- c("StockCode", "Freq")
-count5
-
 sortcluster5 <- count5[rev(order(count5$Freq)),]
-sortcluster5
 
 top10cluster5 <- sortcluster5[1:10, "StockCode"]
-top10cluster5
 
 top10cluster5extracted <- productCountryCluster5[is.element(productCountryCluster5$StockCode, top10cluster5),]
-top10cluster5extracted
+```
 
 
-stockcodes5 <- unique(top10cluster5extracted$StockCode)
-stockcodes5
-
+```{r}
 descriptions5 <- unique(top10cluster5extracted$Description)
 descriptions5
-
-country5 <- unique(top10cluster5extracted$Country)
-country5
 
 price5 <- unique(top10cluster2extracted$UnitPrice)
 price5
 
+country5 <- unique(top10cluster5extracted$Country)
+country5
+
 ```
+
+Cluster 5 also contains some kitchen items, with a varying price range. 
 
