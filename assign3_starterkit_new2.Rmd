@@ -73,6 +73,7 @@ df4<-filter(df3,Description!="Manual")
 df5<-filter(df4,Description!="Adjust bad debt")
 df6<-filter(df5,Description!="Next Day Carriage")
 df7<-filter(df6,CustomerID!="NA")
+df7<-filter(df7,Country != "Unspecified")
 write.csv(df7,'retaildataNew2.csv')
 ```
 
@@ -317,14 +318,22 @@ stockCode1
 desc1 <- unique(productCountryCluster1$Description)
 desc1
 
+cluster1 <- subset(productCountryCluster1, select = c("StockCode"))
+clutercount1 <- table(unlist(cluster1))
+count1<-as.data.frame(clutercount1)
+colnames(count1) <- c("StockCode", "Freq")
+count1
 
-countt2dfSort <- countt2df[rev(order(countt2df$Freq)),]
+sortcluster1 <- count1[rev(order(count1$Freq)),]
 #head(countt2dfSort)
+sortcluster1
 
-mostFreqProducts <- countt2dfSort[1:1000, "StockCode"]
-#head(mostFreqProducts) 
+top10cluster1 <- sortcluster1[1:10, "StockCode"]
+top10cluster1
 
-mostFreqProductsExtracted <- df7[is.element(df7$StockCode, mostFreqProducts),]
+top10cluster1extracted <- productCountryCluster1[is.element(productCountryCluster1$StockCode, top10cluster1),]
+top10cluster1extracted
+
 head(mostFreqProductsExtracted) 
 
 # cluster 2
