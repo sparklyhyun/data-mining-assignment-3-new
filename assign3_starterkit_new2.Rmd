@@ -47,63 +47,80 @@ Hint : Think of creating a Customer-Product matrix before you start your market 
 #install.packages("dplyr")
 ```
 
+
+---
+
+
+#### Summary of Data
+```{r}
+summary(retailData)
+head(retailData)
+tail(retailData)
+```
+
+
+---
+
+
+#### Data Pre-processing 
 ```{r}
 library(dplyr)
 df<-filter(retailData,Description!="[A-Z].*")
-```
-
-```{r}
 df1<-filter(df,Description!="SAMPLES")
-df1
-```
-
-```{r}
 df2<-filter(df1,Quantity>0 )
-df2
-```
-
-```{r}
 df3<-filter(df2,UnitPrice>0)
-df3
-```
-
-```{r}
 df4<-filter(df3,Description!="Manual")
 df5<-filter(df4,Description!="Adjust bad debt")
 df6<-filter(df5,Description!="Next Day Carriage")
-
-```
-
-```{r}
 df7<-filter(df6,CustomerID!="NA")
 write.csv(df7,'retaildataNew2.csv')
 ```
 
+Some data pre-processing has been performed to handle inconsistent data, missing values and irrelevant data. 
+
+* The `Description` with different format was found to be inconsistent with the stock code. (e.g. Stock code 20711 - JUMBO BAG TOYS, inconsistent name - lost in space). Since there were very few of these inconsistent data, and removing them would not affect the dataset significantly, the items with inconsistent description were removed.
+* Samples are not very relevant in this analysis as they are freely given out to the customers when they purchase another product, as a marketing strategy. Also, the customer's decision to buy a product depends more heavily on their need for the product, rather than what samples come with it. Therefore, the samples would not affect the customer's purchase decision significantly, thus they were excluded from the dataset. 
+* Those items with negative `Qantity` or `Unit Price` were also removed as it is impossible to have a product sold for negative quantity or unit price
+* Manuals are add-ons to the products the customers purchase. Therefore, it is highly correlated to the product it is tied to, therefore does not add much information to the analysis. Thus, manuals were also removed from the dataset. 
+* Items with `Description` such as "Adjust bad debt" or "Next Day Carriage" were also excluded as they are not product's names and are inconsistent with the dataset.
+* Items with missing `CustomerID` were also removed from the dataset, as `CustomerID` is a key feature used for clustering. 
 
 
-# here is data exploraton 
-# first do exploration for continuous data 
+---
+
+
+#### Removing Anomalies 
+
+Removing anomalies is important as anomalies can affect the clustering. Removing anomalies can make the clustering process more efficient. 
 
 ```{r}
 barplot(df7$Quantity, col = "blue")
 ```
-# there is an outlier. need to remove that point. 
+
+From the barplot above, there are 2 anomalies of `Quantity` > 20000. These were removed.  
 
 ```{r}
 df7<-filter(df7,Quantity<20000 )
 barplot(df7$Quantity, col = "blue")
 ```
 
+
 ```{r}
 barplot(df7$UnitPrice, col = "blue")
 ```
 
-# again, there is an outlier. thus need to remove
+From the barplot above, there is an anomaly of `UnitPrice` > 3000. This data point was also removed.
 
 ```{r}
 df7<-filter(df7,UnitPrice<3000 )
 barplot(df7$UnitPrice, col = "blue")
 ```
+
+
+---
+
+
+#### Extracting 1000 most frequent items 
 
 ```{r}
 t2 <- subset(df7, select = c("StockCode"))
@@ -111,19 +128,21 @@ countt2 <- table(unlist(t2))
 countt2df<-as.data.frame(countt2)
 colnames(countt2df) <- c("StockCode", "Freq")
 
-countt2df
+#head(countt2df)
 
 
 countt2dfSort <- countt2df[rev(order(countt2df$Freq)),]
-countt2dfSort
+#head(countt2dfSort)
 
 mostFreqProducts <- countt2dfSort[1:1000, "StockCode"]
-mostFreqProducts
+#head(mostFreqProducts) 
 
 mostFreqProductsExtracted <- df7[is.element(df7$StockCode, mostFreqProducts),]
-mostFreqProductsExtracted
+head(mostFreqProductsExtracted) 
 write.csv(mostFreqProductsExtracted,'extracted.csv')
 ```
+
+Using the `StockCode`, 1000 most popular items sold were extracted. The 1000 most popular items were used as they were probably generating the most revenue for the store, and it is logical to focus the marketing efforts for these most popular items. 
 
 
 ```{r}
@@ -131,11 +150,11 @@ summary(mostFreqProductsExtracted)
 str(mostFreqProductsExtracted)
 ```
 
-```{r}
-mostFreqProductsExtracted[,'CustomerID']<-factor(mostFreqProductsExtracted[,'CustomerID'])
-class(mostFreqProductsExtracted$CustomerID)
-```
 
+---
+
+
+#### Creating Customer-Product matrix
 
 ```{r}
 xtabs(Quantity ~ CustomerID + StockCode, data = mostFreqProductsExtracted, addNA = TRUE, sparse = TRUE)
@@ -148,11 +167,19 @@ xtabs(Quantity ~ CustomerID + StockCode, data = mostFreqProductsExtracted, addNA
 ```
 
 
-# only the useful columns extracted
+#### Clustering
+
+**EM Clustering**
+
+**K-Means Clustering**  
+
+#### Conclusion
+
+
 ```{r}
 clusterColumns <- subset(mostFreqProductsExtracted, select = c("StockCode", "Quantity", "CustomerID", "Country"))
 
-clusterColumns
+#clusterColumns
 
 summary(clusterColumns)
 str(clusterColumns)
@@ -163,13 +190,13 @@ str(clusterColumns)
 ```{r}
 library(mclust)
 
-emFit <- Mclust(clusterColumns)
+#emFit <- Mclust(clusterColumns)
 
-emFit
+#emFit
 
-summary(emFit)
+#summary(emFit)
 
-head(emFit)
+#head(emFit)
 
 
 
@@ -188,10 +215,10 @@ clusterColumns2 <- subset(clusterColumns, select = c("numStockCode", "Quantity",
 
 # Single choice for random initial centroids
 K <- 2    # Experiment with different values
-kMeansFit <- kmeans(clusterColumns2, centers = K)
-kMeansFit
+#kMeansFit <- kmeans(clusterColumns2, centers = K)
+#kMeansFit
 
-summary(kMeansFit)
+#summary(kMeansFit)
 
 # plot(mostFreqProductsExtracted, pch = 19, col = palette(myPal)[as.numeric(kMeansFit$cluster)])
 ```
