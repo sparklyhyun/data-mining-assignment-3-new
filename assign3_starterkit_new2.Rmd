@@ -159,13 +159,18 @@ xtabs(Quantity ~ CustomerID + StockCode, data = mostFreqProductsExtracted, addNA
 ```
 
 
+---
+
+
 #### Clustering
 
-**EM Clustering**
+For clustering, we used K-Means Clustering algorithm. 
 
-**K-Means Clustering**  
-
-#### Conclusion
+A 4 relevant columns were extracted for the analysis:
+* `StockCode` : Stock code is essential to understand how many of which products are being sold.  
+* `Quantity` : Quantity can help us to understand the purchase pattern customers have on each product. Some products would more likely to be sold as a bulk.
+* `CustomerID` : Customer ID is also essential in understanding the customer's purchase pattern
+* `Country` : Country is also important as customers from different countries might have different purchase patterns, for reasons such as differences in culture, GDP, preferences, etc. 
 
 
 ```{r}
@@ -175,69 +180,25 @@ summary(clusterColumns)
 str(clusterColumns)
 ```
 
-
+As K-Means clustering only works for numeric values, non-numeric values (`StockCode`, `Country`) were given numeric indexes for clustering purpose. 
 
 ```{r}
-#myPal <- c("red","blue","darkgreen","magenta","darkgrey","black")
-
-
 clusterColumns$numStockCode <- as.numeric(clusterColumns$StockCode)
 clusterColumns$numCountry <- as.numeric(clusterColumns$Country)
 
 summary(clusterColumns)
 
 clusterColumns2 <- subset(clusterColumns, select = c("numStockCode", "Quantity", "CustomerID", "numCountry"))
-
-# Single choice for random initial centroids
-K <- 2    # Experiment with different values
-#kMeansFit <- kmeans(clusterColumns2, centers = K)
-#kMeansFit
-
-#summary(kMeansFit)
-
-# plot(mostFreqProductsExtracted, pch = 19, col = palette(myPal)[as.numeric(kMeansFit$cluster)])
 ```
 
+K-Means Clusterng was performed with 2 features each. 
 
-# with 4 columns
 
-```{r}
-kMin <- 1
-kMax <- 20
-withinSS <- double(kMax - kMin + 1)
-betweenSS <- double(kMax - kMin + 1)
-for (K in kMin:kMax) {
-  kMeansFit <-  kmeans(clusterColumns2, centers = K)
-  withinSS[K] <- sum(kMeansFit$withinss)
-  betweenSS[K] <- kMeansFit$betweenss
-}
-plot(kMin:kMax, betweenSS, pch=19, type="b", col="red",
-     xlab = "Value of K", ylab = "Sum of Squares (Within and Between)")
-points(kMin:kMax, withinSS, pch=19, type="b", col="green")
-plot(kMin:kMax, withinSS, pch=19, type="b", col="green",
-     xlab = "Value of K", ylab = "Sum of Squares (Within and Between)")
-```
+**1. Stock Code & Country**  
 
-```{r}
-kMin <- 1
-kMax <- 5
-withinSS <- double(kMax - kMin + 1)
-betweenSS <- double(kMax - kMin + 1)
-for (K in kMin:kMax) {
-  kMeansFit <-  kmeans(clusterColumns2, centers = K)
-  withinSS[K] <- sum(kMeansFit$withinss)
-  betweenSS[K] <- kMeansFit$betweenss
-}
-plot(kMin:kMax, betweenSS, pch=19, type="b", col="red",
-     xlab = "Value of K", ylab = "Sum of Squares (Within and Between)")
-points(kMin:kMax, withinSS, pch=19, type="b", col="green")
-plot(kMin:kMax, withinSS, pch=19, type="b", col="green",
-     xlab = "Value of K", ylab = "Sum of Squares (Within and Between)")
-```
+Features `StockCode` and `Country` were selected to understand what kind of products are sold frequently in which countries. Different numbers of clusters were experimented and plotted to determine the optimum number of clusters. Let K be the final number of clusters. 
 
-# with 2 columns each 
 
-# stock code vs country 
 ```{r}
 clusterColumns3 <- subset(clusterColumns, select = c("numStockCode", "numCountry"))
 kMin <- 1
@@ -256,6 +217,10 @@ plot(kMin:kMax, withinSS, pch=19, type="b", col="green",
      xlab = "Value of K", ylab = "Sum of Squares (Within and Between)")
 ```
 
+To evaluate the clusters, Within Sum of Squres and Between Sum of Squares were used. From the plots above, we can see that the Within Sum of Squares (Green line) drops drastically until K = 5 until almost 0 and plateus. At K = 5, the Between Sum of Squares (Red line) increases drastically and beyond K = 5 the value plateus. Therefore, the optimal number of clusters is 5. 
+
+Therefore, 5 clusters were created. 
+
 ```{r}
 K <- 5
 kMeansFit <- kmeans(clusterColumns3, centers = K, nstart = 20)
@@ -270,7 +235,8 @@ clusterColumns3
 
 ```
 
-# pulling apart a cluster 
+These 5 clusters were then separated for deeper analysis. 
+
 ```{r}
 
 mostFreqProductsExtracted$numStockCode <- clusterColumns$numStockCode
@@ -303,37 +269,55 @@ productCountryCluster4 <- allProductCountryClusters[clusterLabels == 4,]
 productCountryCluster4
 productCountryCluster5 <- allProductCountryClusters[clusterLabels == 5,]
 productCountryCluster5
+```
 
-# for each product, get top 10 products
 
-# cluster 1
+*Cluster 1
+
+Top 10 most frequently sold products from the entire cluster was extracted. 
+
+```{r}
 #trying to get top 10
+stockcodelol <- unique(productCountryCluster1$StockCode)
+stockcodelol
 cluster1 <- subset(productCountryCluster1, select = c("StockCode"))
-cluster1
 clutercount1 <- table(unlist(cluster1))
-clutercount1
 count1<-as.data.frame(clutercount1)
 colnames(count1) <- c("StockCode", "Freq")
-count1
 
 sortcluster1 <- count1[rev(order(count1$Freq)),]
-sortcluster1
 
 top10cluster1 <- sortcluster1[1:10, "StockCode"]
-top10cluster1
 
 top10cluster1extracted <- productCountryCluster1[is.element(productCountryCluster1$StockCode, top10cluster1),]
 top10cluster1extracted
+```
 
-
-stockcodes1 <- unique(top10cluster1extracted$StockCode)
-stockcodes1
-
+```{r}
 descriptions1 <- unique(top10cluster1extracted$Description)
 descriptions1
+```
 
+There are some repetitions due to the spelling differences in the names (e.g. *JUMBO BAG VINTAGE DOILY*, *JUMBO BAG VINTAGE DOILEY*, *LUNCH BAG VINTAGE DOILY*, *LUNCH BAG VINTAGE DOILEY*), also different format (e.g. *SPOTTY BUNTING*, *BUNTING , SPOTTY*).
+
+The most popular products in cluster 1 are party wares. To understand why party wares are so popular in cluster 1, the counries and invoice dates were listed. 
+
+
+```{r}
+country1 <- unique(top10cluster1extracted$Country)
+country1
+
+```
+
+
+```{r}
+invoice1 <- unique(top10cluster1extracted$InvoiceDate)
+invoice1
+write.csv(invoice1, "invoiceTest.csv")
 # different spacing for LUNCH BAG SUKI DESIGN 
+```
 
+```{r}
 # cluster 2
 #trying to get top 10
 cluster2 <- subset(productCountryCluster2, select = c("StockCode"))
@@ -358,6 +342,101 @@ stockcodes2
 
 descriptions2 <- unique(top10cluster2extracted$Description)
 descriptions2
+
+country2 <- unique(top10cluster2extracted$Country)
+country2
+```
+
+```{r}
+# cluster 3
+#trying to get top 10
+cluster3 <- subset(productCountryCluster3, select = c("StockCode"))
+clutercount3 <- table(unlist(cluster3))
+count3<-as.data.frame(clutercount3)
+count3
+colnames(count3) <- c("StockCode", "Freq")
+count3
+
+sortcluster3 <- count3[rev(order(count3$Freq)),]
+sortcluster3
+
+top10cluster3 <- sortcluster3[1:10, "StockCode"]
+top10cluster3
+
+top10cluster3extracted <- productCountryCluster3[is.element(productCountryCluster3$StockCode, top10cluster3),]
+top10cluster3extracted
+
+
+stockcodes3 <- unique(top10cluster3extracted$StockCode)
+stockcodes3
+
+descriptions3 <- unique(top10cluster3extracted$Description)
+descriptions3
+
+country3 <- unique(top10cluster1extracted$Country)
+country3
+```
+
+```{r}
+# cluster 4
+#trying to get top 10
+cluster4 <- subset(productCountryCluster4, select = c("StockCode"))
+clutercount4 <- table(unlist(cluster4))
+count4<-as.data.frame(clutercount4)
+count4
+colnames(count4) <- c("StockCode", "Freq")
+count4
+
+sortcluster4 <- count4[rev(order(count4$Freq)),]
+sortcluster4
+
+top10cluster4 <- sortcluster4[1:10, "StockCode"]
+top10cluster4
+
+top10cluster4extracted <- productCountryCluster4[is.element(productCountryCluster4$StockCode, top10cluster4),]
+top10cluster4extracted
+
+
+stockcodes4 <- unique(top10cluster4extracted$StockCode)
+stockcodes4
+
+descriptions4 <- unique(top10cluster4extracted$Description)
+descriptions4
+
+country4 <- unique(top10cluster4extracted$Country)
+country4
+```
+
+```{r}
+#cluster 5
+#trying to get top 10
+cluster5 <- subset(productCountryCluster5, select = c("StockCode"))
+clutercount5 <- table(unlist(cluster5))
+count5<-as.data.frame(clutercount5)
+count5
+colnames(count5) <- c("StockCode", "Freq")
+count5
+
+sortcluster5 <- count5[rev(order(count5$Freq)),]
+sortcluster5
+
+top10cluster5 <- sortcluster5[1:10, "StockCode"]
+top10cluster5
+
+top10cluster5extracted <- productCountryCluster5[is.element(productCountryCluster5$StockCode, top10cluster5),]
+top10cluster5extracted
+
+
+stockcodes5 <- unique(top10cluster5extracted$StockCode)
+stockcodes5
+
+descriptions5 <- unique(top10cluster5extracted$Description)
+descriptions5
+
+country5 <- unique(top10cluster5extracted$Country)
+country5
+
+
 ```
 
 
