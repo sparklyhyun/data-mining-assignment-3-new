@@ -204,6 +204,8 @@ library(mclust)
 
 ```
 
+
+
 ```{r}
 #myPal <- c("red","blue","darkgreen","magenta","darkgrey","black")
 
@@ -221,4 +223,82 @@ K <- 2    # Experiment with different values
 #summary(kMeansFit)
 
 # plot(mostFreqProductsExtracted, pch = 19, col = palette(myPal)[as.numeric(kMeansFit$cluster)])
+```
+
+
+```{r}
+kMin <- 1
+kMax <- 20
+withinSS <- double(kMax - kMin + 1)
+betweenSS <- double(kMax - kMin + 1)
+for (K in kMin:kMax) {
+  kMeansFit <-  kmeans(clusterColumns2, centers = K)
+  withinSS[K] <- sum(kMeansFit$withinss)
+  betweenSS[K] <- kMeansFit$betweenss
+}
+plot(kMin:kMax, betweenSS, pch=19, type="b", col="red",
+     xlab = "Value of K", ylab = "Sum of Squares (Within and Between)")
+points(kMin:kMax, withinSS, pch=19, type="b", col="green")
+plot(kMin:kMax, withinSS, pch=19, type="b", col="green",
+     xlab = "Value of K", ylab = "Sum of Squares (Within and Between)")
+```
+
+```{r}
+kMin <- 1
+kMax <- 5
+withinSS <- double(kMax - kMin + 1)
+betweenSS <- double(kMax - kMin + 1)
+for (K in kMin:kMax) {
+  kMeansFit <-  kmeans(clusterColumns2, centers = K)
+  withinSS[K] <- sum(kMeansFit$withinss)
+  betweenSS[K] <- kMeansFit$betweenss
+}
+plot(kMin:kMax, betweenSS, pch=19, type="b", col="red",
+     xlab = "Value of K", ylab = "Sum of Squares (Within and Between)")
+points(kMin:kMax, withinSS, pch=19, type="b", col="green")
+plot(kMin:kMax, withinSS, pch=19, type="b", col="green",
+     xlab = "Value of K", ylab = "Sum of Squares (Within and Between)")
+```
+
+```{r}
+myPal <- c("red","blue","darkgreen","magenta","darkgrey","black")
+K <- 2
+kMeansFit <- kmeans(clusterColumns2, centers = K, nstart = 20)
+kMeansFit
+pairs(clusterColumns, pch = 19, cex = 0.5, 
+      col = palette(myPal)[as.numeric(kMeansFit$cluster)])
+# Note that the labels are stored as follows
+kMeansFit$cluster
+clustLabels <- kMeansFit$cluster
+```
+
+```{r}
+kMeansFit$cluster
+clustLabels <- kMeansFit$cluster
+  
+# We may extract the clusters as follows
+kMeansClust1 = mostFreqProductsExtracted[clustLabels == 1,]
+kMeansClust2 = mostFreqProductsExtracted[clustLabels == 2,]
+```
+
+```{r}
+summary(kMeansClust1)
+summary(kMeansClust2)
+kMeansClust1$numStockCode<-  as.numeric(kMeansClust1$StockCode)
+kMeansClust2$numStockCode<-  as.numeric(kMeansClust2$StockCode)
+kMeansClust1$numCustomerID<-  as.numeric(kMeansClust1$CustomerID)
+kMeansClust2$numCustomerID<-  as.numeric(kMeansClust2$CustomerID)
+kMeansClust1$numQuantity<-  as.numeric(kMeansClust1$Quantity)
+kMeansClust2$numQuantity<-  as.numeric(kMeansClust2$Quantity)
+#kMeansClust1$numDescription <- as.numeric(kMeansClust1$Description)
+kMeansClust2$numCountry <- as.numeric(kMeansClust2$Country)
+kMeansClust1$numCountry <- as.numeric(kMeansClust1$Country)
+#kMeansClust2$numDescription <- as.numeric(kMeansClust2$Description)
+# Observe how the statistical summary differ
+# Remember : Plot on same scales to compare
+par(mfrow=c(2,2))
+hist(kMeansClust1$numCountry,  col = "lightgreen")
+hist(kMeansClust1$Quantity, col = "lightgreen")
+hist(kMeansClust2$numCountry,  col = "steelblue")
+hist(kMeansClust2$Quantity, col = "steelblue")
 ```
