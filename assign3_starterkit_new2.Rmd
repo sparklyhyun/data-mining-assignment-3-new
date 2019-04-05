@@ -304,21 +304,16 @@ productCountryCluster1 <- allProductCountryClusters[clusterLabels == 1,]
 productCountryCluster1
 productCountryCluster2 <- allProductCountryClusters[clusterLabels == 2,]
 productCountryCluster2
-productCountryCluster3 <- subset(allProductCountryClusters, cluster = 3)
-productCountryCluster4 <- subset(allProductCountryClusters, cluster = 4)
-productCountryCluster5 <- subset(allProductCountryClusters, cluster = 5)
-
+productCountryCluster3 <- allProductCountryClusters[clusterLabels == 3,]
+productCountryCluster3
+productCountryCluster4 <- allProductCountryClusters[clusterLabels == 4,]
+productCountryCluster4
+productCountryCluster5 <- allProductCountryClusters[clusterLabels == 5,]
+productCountryCluster5
 
 # for each product, get top 10 products
 
 # cluster 1
-countries1 <- unique(productCountryCluster1$Country)
-stockCode1 <- unique(productCountryCluster1$StockCode)
-countries1
-stockCode1
-desc1 <- unique(productCountryCluster1$Description)
-desc1
-
 #trying to get top 10
 cluster1 <- subset(productCountryCluster1, select = c("StockCode"))
 clutercount1 <- table(unlist(cluster1))
@@ -327,7 +322,6 @@ colnames(count1) <- c("StockCode", "Freq")
 count1
 
 sortcluster1 <- count1[rev(order(count1$Freq)),]
-#head(countt2dfSort)
 sortcluster1
 
 top10cluster1 <- sortcluster1[1:10, "StockCode"]
@@ -337,24 +331,37 @@ top10cluster1extracted <- productCountryCluster1[is.element(productCountryCluste
 top10cluster1extracted
 
 
-stockcodes <- unique(top10cluster1extracted$StockCode)
-stockcodes
+stockcodes1 <- unique(top10cluster1extracted$StockCode)
+stockcodes1
 
-
-descriptions <- unique(top10cluster1extracted$Description)
-descriptions
+descriptions1 <- unique(top10cluster1extracted$Description)
+descriptions1
 
 # different spacing for LUNCH BAG SUKI DESIGN 
 
-
-
-head(mostFreqProductsExtracted) 
-
 # cluster 2
-countries2 <- unique(productCountryCluster2$Country)
-countries2
-stockCode2 <- unique(productCountryCluster2$StockCode)
-stockCode2
+#trying to get top 10
+cluster2 <- subset(productCountryCluster2, select = c("StockCode"))
+clutercount2 <- table(unlist(cluster2))
+count2<-as.data.frame(clutercount2)
+colnames(count2) <- c("StockCode", "Freq")
+count2
+
+sortcluster2 <- count2[rev(order(count2$Freq)),]
+sortcluster2
+
+top10cluster2 <- sortcluster2[1:10, "StockCode"]
+top10cluster2
+
+top10cluster2extracted <- productCountryCluster2[is.element(productCountryCluster2$StockCode, top10cluster2),]
+top10cluster2extracted
+
+
+stockcodes1 <- unique(top10cluster1extracted$StockCode)
+stockcodes1
+
+descriptions1 <- unique(top10cluster1extracted$Description)
+descriptions1
 ```
 
 
