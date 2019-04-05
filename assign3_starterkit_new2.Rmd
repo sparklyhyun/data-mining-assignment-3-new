@@ -434,7 +434,7 @@ country5
 
 ```
 
-Cluster 5 also contains some kitchen items, with average price point. 
+Cluster 5 also contains some kitchen items, with a more varying price.  
 
 
 ---
