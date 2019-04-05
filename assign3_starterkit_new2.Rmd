@@ -74,7 +74,7 @@ df5<-filter(df4,Description!="Adjust bad debt")
 df6<-filter(df5,Description!="Next Day Carriage")
 df7<-filter(df6,CustomerID!="NA")
 df7<-filter(df7,Country != "Unspecified")
-write.csv(df7,'retaildataNew2.csv')
+# write.csv(df7,'retaildataNew2.csv')
 ```
 
 Some data pre-processing has been performed to handle inconsistent data, missing values and irrelevant data. 
@@ -130,19 +130,14 @@ countt2 <- table(unlist(t2))
 countt2df<-as.data.frame(countt2)
 colnames(countt2df) <- c("StockCode", "Freq")
 
-#head(countt2df)
-
-
 countt2dfSort <- countt2df[rev(order(countt2df$Freq)),]
-#head(countt2dfSort)
 
 mostFreqProducts <- countt2dfSort[1:1000, "StockCode"]
-#head(mostFreqProducts) 
 
 mostFreqProductsExtracted <- df7[is.element(df7$StockCode, mostFreqProducts),]
 head(mostFreqProductsExtracted) 
 
-write.csv(mostFreqProductsExtracted,'extracted.csv')
+# write.csv(mostFreqProductsExtracted,'extracted.csv')
 ```
 
 Using the `StockCode`, 1000 most popular items sold were extracted. The 1000 most popular items were used as they were probably generating the most revenue for the store, and it is logical to focus the marketing efforts for these most popular items. 
@@ -175,8 +170,6 @@ xtabs(Quantity ~ CustomerID + StockCode, data = mostFreqProductsExtracted, addNA
 
 ```{r}
 clusterColumns <- subset(mostFreqProductsExtracted, select = c("StockCode", "Quantity", "CustomerID", "Country"))
-
-#clusterColumns
 
 summary(clusterColumns)
 str(clusterColumns)
@@ -290,7 +283,7 @@ mostFreqProductsExtracted
 clsuterProductCountry <- mostFreqProductsExtracted[order(mostFreqProductsExtracted$cluster),]
 clsuterProductCountry
 
-write.csv(clsuterProductCountry,'clusterProductCustomer.csv')
+# write.csv(clsuterProductCountry,'clusterProductCustomer.csv')
 
 # separate each cluster into diff dataframe
 
@@ -316,7 +309,9 @@ productCountryCluster5
 # cluster 1
 #trying to get top 10
 cluster1 <- subset(productCountryCluster1, select = c("StockCode"))
+cluster1
 clutercount1 <- table(unlist(cluster1))
+clutercount1
 count1<-as.data.frame(clutercount1)
 colnames(count1) <- c("StockCode", "Freq")
 count1
@@ -344,6 +339,7 @@ descriptions1
 cluster2 <- subset(productCountryCluster2, select = c("StockCode"))
 clutercount2 <- table(unlist(cluster2))
 count2<-as.data.frame(clutercount2)
+count2
 colnames(count2) <- c("StockCode", "Freq")
 count2
 
@@ -357,11 +353,11 @@ top10cluster2extracted <- productCountryCluster2[is.element(productCountryCluste
 top10cluster2extracted
 
 
-stockcodes1 <- unique(top10cluster1extracted$StockCode)
-stockcodes1
+stockcodes2 <- unique(top10cluster2extracted$StockCode)
+stockcodes2
 
-descriptions1 <- unique(top10cluster1extracted$Description)
-descriptions1
+descriptions2 <- unique(top10cluster2extracted$Description)
+descriptions2
 ```
 
 
