@@ -307,29 +307,25 @@ There are some repetitions due to the spelling differences in the names (e.g. *J
 
 The most popular products in cluster 1 are affordable lunch wares that are popular all around the world. 
 
+
+*Cluster 2
+
+Top 10 most frequently sold products from cluster1 was extracted. 
+
 ```{r}
-# cluster 2
-#trying to get top 10
 cluster2 <- subset(productCountryCluster2, select = c("StockCode"))
 clutercount2 <- table(unlist(cluster2))
 count2<-as.data.frame(clutercount2)
-count2
 colnames(count2) <- c("StockCode", "Freq")
-count2
 
 sortcluster2 <- count2[rev(order(count2$Freq)),]
-sortcluster2
 
 top10cluster2 <- sortcluster2[1:10, "StockCode"]
-top10cluster2
 
 top10cluster2extracted <- productCountryCluster2[is.element(productCountryCluster2$StockCode, top10cluster2),]
-top10cluster2extracted
+```
 
-
-stockcodes2 <- unique(top10cluster2extracted$StockCode)
-stockcodes2
-
+```{r}
 descriptions2 <- unique(top10cluster2extracted$Description)
 descriptions2
 
@@ -341,29 +337,27 @@ price2
 
 ```
 
+The most popular products in cluster 2 are antiques or items associated with tea culture (e.g. *ANTIQUE SILVER TEA GLASS ETCHED*, *ANTIQUE SILVER T-LIGHT GLASS*, *WOODEN FRAME ANTIQUE WHITE*,*60 TEATIME FAIRY CAKE CASES*). The countries in the cluster are mainly European countries which explains why the top products in the cluster are associated with tea. The unit prices across the cluster ranges from 0.40 (teaparty items) to 523.00 (antique silver tea glass).
+
+
+*Cluster 3
+
+Top 10 most frequently sold products from cluster1 was extracted. 
+
 ```{r}
-# cluster 3
-#trying to get top 10
 cluster3 <- subset(productCountryCluster3, select = c("StockCode"))
 clutercount3 <- table(unlist(cluster3))
 count3<-as.data.frame(clutercount3)
-count3
 colnames(count3) <- c("StockCode", "Freq")
-count3
 
 sortcluster3 <- count3[rev(order(count3$Freq)),]
-sortcluster3
 
 top10cluster3 <- sortcluster3[1:10, "StockCode"]
-top10cluster3
 
 top10cluster3extracted <- productCountryCluster3[is.element(productCountryCluster3$StockCode, top10cluster3),]
-top10cluster3extracted
+```
 
-
-stockcodes3 <- unique(top10cluster3extracted$StockCode)
-stockcodes3
-
+```{r}
 descriptions3 <- unique(top10cluster3extracted$Description)
 descriptions3
 
@@ -373,6 +367,8 @@ country3
 price3 <- unique(top10cluster3extracted$UnitPrice)
 price3
 ```
+
+The most popular products in cluster 3 are associated with kitchen items (*LUNCH BAG SUKI  DESIGN*,*REGENCY CAKESTAND 3 TIER*) that are relatively cheaper.
 
 *Cluster 4
 
@@ -434,7 +430,7 @@ country5
 
 ```
 
-Cluster 5 also contains some kitchen items, with a more varying price.  
+Cluster 5 also contains some kitchen items, with a more varying price.   
 
 
 ---
