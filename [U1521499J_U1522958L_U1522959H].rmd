@@ -226,7 +226,6 @@ K <- 5
 kMeansFit <- kmeans(clusterColumns3, centers = K, nstart = 20)
 
 # Note that the labels are stored as follows
-kMeansFit$cluster
 clusterColumns3$cluster <- kMeansFit$cluster
 
 ```
