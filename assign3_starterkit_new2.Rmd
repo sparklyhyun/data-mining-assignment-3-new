@@ -139,16 +139,11 @@ mostFreqProducts <- countt2dfSort[1:1000, "StockCode"]
 
 mostFreqProductsExtracted <- df7[is.element(df7$StockCode, mostFreqProducts),]
 head(mostFreqProductsExtracted) 
+
 write.csv(mostFreqProductsExtracted,'extracted.csv')
 ```
 
 Using the `StockCode`, 1000 most popular items sold were extracted. The 1000 most popular items were used as they were probably generating the most revenue for the store, and it is logical to focus the marketing efforts for these most popular items. 
-
-
-```{r}
-summary(mostFreqProductsExtracted)
-str(mostFreqProductsExtracted)
-```
 
 
 ---
@@ -188,30 +183,13 @@ str(clusterColumns)
 
 
 ```{r}
-library(mclust)
-
-#emFit <- Mclust(clusterColumns)
-
-#emFit
-
-#summary(emFit)
-
-#head(emFit)
-
-
-
-# plot(emFit, what = "classification")
-
-```
-
-
-
-```{r}
 #myPal <- c("red","blue","darkgreen","magenta","darkgrey","black")
 
 
 clusterColumns$numStockCode <- as.numeric(clusterColumns$StockCode)
 clusterColumns$numCountry <- as.numeric(clusterColumns$Country)
+
+summary(clusterColumns)
 
 clusterColumns2 <- subset(clusterColumns, select = c("numStockCode", "Quantity", "CustomerID", "numCountry"))
 
@@ -225,6 +203,8 @@ K <- 2    # Experiment with different values
 # plot(mostFreqProductsExtracted, pch = 19, col = palette(myPal)[as.numeric(kMeansFit$cluster)])
 ```
 
+
+# with 4 columns
 
 ```{r}
 kMin <- 1
@@ -259,6 +239,67 @@ points(kMin:kMax, withinSS, pch=19, type="b", col="green")
 plot(kMin:kMax, withinSS, pch=19, type="b", col="green",
      xlab = "Value of K", ylab = "Sum of Squares (Within and Between)")
 ```
+
+# with 2 columns each 
+
+# stock code vs country 
+```{r}
+clusterColumns3 <- subset(clusterColumns, select = c("numStockCode", "numCountry"))
+kMin <- 1
+kMax <- 10
+withinSS <- double(kMax - kMin + 1)
+betweenSS <- double(kMax - kMin + 1)
+for (K in kMin:kMax) {
+  kMeansFit <-  kmeans(clusterColumns3, centers = K)
+  withinSS[K] <- sum(kMeansFit$withinss)
+  betweenSS[K] <- kMeansFit$betweenss
+}
+plot(kMin:kMax, betweenSS, pch=19, type="b", col="red",
+     xlab = "Value of K", ylab = "Sum of Squares (Within and Between)")
+points(kMin:kMax, withinSS, pch=19, type="b", col="green")
+plot(kMin:kMax, withinSS, pch=19, type="b", col="green",
+     xlab = "Value of K", ylab = "Sum of Squares (Within and Between)")
+```
+
+```{r}
+K <- 5
+kMeansFit <- kmeans(clusterColumns3, centers = K, nstart = 20)
+kMeansFit
+
+# Note that the labels are stored as follows
+kMeansFit$cluster
+
+clusterColumns3$cluster <- kMeansFit$cluster
+
+clusterColumns3
+
+
+
+```
+
+
+
+# stock code vs customer 
+```{r}
+clusterColumns3 <- subset(clusterColumns, select = c("numStockCode", "CustomerID"))
+kMin <- 1
+kMax <- 10
+withinSS <- double(kMax - kMin + 1)
+betweenSS <- double(kMax - kMin + 1)
+for (K in kMin:kMax) {
+  kMeansFit <-  kmeans(clusterColumns3, centers = K)
+  withinSS[K] <- sum(kMeansFit$withinss)
+  betweenSS[K] <- kMeansFit$betweenss
+}
+plot(kMin:kMax, betweenSS, pch=19, type="b", col="red",
+     xlab = "Value of K", ylab = "Sum of Squares (Within and Between)")
+points(kMin:kMax, withinSS, pch=19, type="b", col="green")
+plot(kMin:kMax, withinSS, pch=19, type="b", col="green",
+     xlab = "Value of K", ylab = "Sum of Squares (Within and Between)")
+```
+
+
+
 
 ```{r}
 myPal <- c("red","blue","darkgreen","magenta","darkgrey","black")
